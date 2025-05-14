@@ -42,6 +42,7 @@ class DynamicIntArray:
         if(index < 0 or index >= self.size):
             raise IndexError("Index fora dos limites.")
        
+       #n precisa do for 
         for i in range(self.size):
             self.data[index] = value
 
@@ -81,14 +82,15 @@ class DynamicIntArray:
         
         removedValue = self.data[index]
 
-        for i in range(index, self.size):
-            nextValue = self.data[i + 1]
-            self.data[i] = nextValue
-        
-        print(f"O array está assim: {self.data}")
-        
+        for i in range(index, self.size - 1):
+            self.data[i] = self.data[i + 1]
+            self.size -= 1
 
+        if self.size <= self.capacity // 4 and self.capacity > 2:
+            self._resize(max(2, self.capacity // 2))
 
+        return removedValue
+        
 
     # remover elemento no index passado.
 
@@ -113,8 +115,11 @@ class DynamicIntArray:
     # mesmas regras do remove_at.
 
     def remove(self, value):
-        pass
-
+        index = self.index_of(value)
+        if index == -1:
+            return False
+        self.remove_at(index)
+        return True
 
     # insert_at
 
@@ -140,10 +145,8 @@ class DynamicIntArray:
     # retorna True ou False se encontrou ou não o valor buscado.
 
     def contains(self, value):
-        for i in range(self.size):
-            if self.data[i] == value:
-                return True
-        return False
+        return self.index_of(value) != -1
+    
 
     def __str__(self):
 
